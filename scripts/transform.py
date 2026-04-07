@@ -11,24 +11,28 @@ def run():
 
     print("Running transformations...")
 
-    # Clean data
+    # Clean orders
     cur.execute("DELETE FROM orders_clean;")
     cur.execute("""
         INSERT INTO orders_clean
-        SELECT * FROM orders_raw
+        SELECT 
+            order_id,
+            customer_id,
+            order_status,
+            order_purchase_timestamp
+        FROM orders_raw
         WHERE customer_id IS NOT NULL;
     """)
 
-    # Analytics
+    # Customer Lifetime Value
     cur.execute("DELETE FROM customer_ltv;")
     cur.execute("""
         INSERT INTO customer_ltv
         SELECT 
             o.customer_id,
-            SUM(p.price * o.quantity) as total_spent
+            SUM(oi.price + oi.shipping_charges) AS total_spent
         FROM orders_clean o
-        JOIN products_raw p
-        ON o.product_id = p.product_id
+        JOIN order_items_raw oi ON o.order_id = oi.order_id
         GROUP BY o.customer_id;
     """)
 
@@ -36,6 +40,7 @@ def run():
     conn.close()
 
     print("Transformations completed.")
+
 
 if __name__ == "__main__":
     run()

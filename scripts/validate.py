@@ -14,8 +14,8 @@ def run():
     cur.execute("SELECT COUNT(*) FROM orders_raw WHERE customer_id IS NULL;")
     print("Null customer_id:", cur.fetchone()[0])
 
-    cur.execute("SELECT COUNT(*) FROM orders_raw WHERE quantity <= 0;")
-    print("Invalid quantity:", cur.fetchone()[0])
+    cur.execute("SELECT COUNT(*) FROM order_items_raw WHERE price <= 0;")
+    print("Invalid price count:", cur.fetchone()[0])
 
     conn.close()
 

@@ -1,6 +1,5 @@
 import logging
 import os
-from datetime import datetime
 
 logging.basicConfig(
     filename='logs/pipeline.log',
